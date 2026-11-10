@@ -1095,4 +1095,5 @@ class ListingType(StrEnum):
     PODCAST_EPISODES = "podcast_episodes"  # the episodes of a podcast
     GENRE_TRACKS = "genre_tracks"  # the tracks of a genre
     GENRE_ALBUMS = "genre_albums"  # the albums of a genre
+    ALBUM_SERIES = "album_series"  # the albums of an album series
     BROWSE = "browse"  # the items in a browse folder
