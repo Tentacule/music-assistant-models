@@ -365,6 +365,7 @@ class Track(MediaItem):
     last_played: int = 0  # only available for library/database items
     album: Album | ItemMapping | None = None  # required for album tracks
     disc_number: int = 0  # required for album tracks
+    disc_subtitle: str = ""  # optional disc name from discsubtitle tag (multi-disc albums)
     track_number: int = 0  # required for album tracks
     # only populated when a FULL track is requested (get_track), not on track listings
     audio_metadata: AudioMetadata | None = None
@@ -461,7 +462,6 @@ class Audiobook(MediaItem):
     # which will let MA fallback to an internal resume point
     fully_played: bool | None = None
     resume_position_ms: int | None = None
-    resume_position_timestamp: datetime | None = None
 
     media_type: MediaType = MediaType.AUDIOBOOK
 
@@ -502,7 +502,6 @@ class PodcastEpisode(MediaItem):
     # which will let MA fallback to an internal resume point
     fully_played: bool | None = None
     resume_position_ms: int | None = None
-    resume_position_timestamp: datetime | None = None
 
     media_type: MediaType = MediaType.PODCAST_EPISODE
 
