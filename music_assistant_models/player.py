@@ -19,6 +19,7 @@ from .enums import (
     PlayerType,
     ProtocolRole,
     RepeatMode,
+    SleepTimerMode,
 )
 from .media_items import MediaItemPalette
 from .translations import resolve_translation, translations_active
@@ -484,8 +485,12 @@ class Player(DataClassDictMixin):
     has_setup_flow: bool = False
 
     # sleep_timer_expires_at: unix (utc) timestamp at which the active sleep timer will
-    # stop playback, or None if no sleep timer is currently set for this player
+    # stop playback, or None if it has none (see sleep_timer_mode for whether one is set)
     sleep_timer_expires_at: float | None = None
+    # sleep_timer_mode: the point at which the active sleep timer stops playback, or None if
+    # no sleep timer is set. For a mode other than DURATION, sleep_timer_expires_at is an
+    # estimate while playing and None while paused.
+    sleep_timer_mode: SleepTimerMode | None = None
 
     # active_source_audio: effective audio details reported for the currently active
     # (external) source, or None if the active source is Music Assistant itself or no
@@ -537,29 +542,6 @@ class Player(DataClassDictMixin):
         d["display_name"] = d["name"]
         # add alias for state for backwards compatibility
         d["state"] = d["playback_state"]
-        # add alias for group_childs for backwards compatibility
-        d["group_childs"] = d["group_members"]
-        # add alias for extra_data for backwards compatibility
-        d["extra_data"] = d["extra_attributes"]
-        # add alias for device_info.mac_address for backwards compatibility
-        if "device_info" in d and "identifiers" in d["device_info"]:
-            d["device_info"]["mac_address"] = d["device_info"]["identifiers"].get(
-                IdentifierType.MAC_ADDRESS.value
-            )
-        # add alias for device_info.ip_address for backwards compatibility
-        if "device_info" in d and "identifiers" in d["device_info"]:
-            d["device_info"]["ip_address"] = d["device_info"]["identifiers"].get(
-                IdentifierType.IP_ADDRESS.value
-            )
-        # add alias for hide_in_ui for backwards compatibility
-        if d.get("hide_in_ui") is True:
-            d["hide_player_in_ui"] = ["always"]
-        else:
-            d["hide_player_in_ui"] = [
-                "when_unavailable",
-                "when_synced",
-                "when_group_active",
-            ]
         # TEMP: ensure group_volume is not None for backwards
         # compatibility with older versions of the HA integration
         if d.get("group_volume") is None:
@@ -575,10 +557,4 @@ class Player(DataClassDictMixin):
         # add alias for name for backwards compatibility
         if "name" not in d and "display_name" in d:
             d["name"] = d["display_name"]
-        # add alias for group_members for backwards compatibility
-        if "group_members" not in d and "group_childs" in d:
-            d["group_members"] = d["group_childs"]
-        # add alias for extra_attributes for backwards compatibility
-        if "extra_attributes" not in d and "extra_data" in d:
-            d["extra_attributes"] = d["extra_data"]
         return d

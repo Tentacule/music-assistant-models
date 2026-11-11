@@ -465,6 +465,20 @@ class PlaybackState(StrEnum):
 PlayerState = PlaybackState
 
 
+class SleepTimerMode(StrEnum):
+    """Enum with the points at which a player's sleep timer stops playback."""
+
+    DURATION = "duration"
+    END_OF_ITEM = "end_of_item"
+    END_OF_CHAPTER = "end_of_chapter"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls, value: object) -> SleepTimerMode:  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return cls.UNKNOWN
+
+
 class PlayerType(StrEnum):
     """Enum with possible Player Types.
 
@@ -648,6 +662,9 @@ class EventType(StrEnum):
     # one user's like/dislike/unset on one item changed; data is a FavoriteUpdate,
     # object_id is the item uri
     FAVORITE_UPDATED = "favorite_updated"
+    # one user's bookmarks of one copy changed; object_id is the uri of the copy,
+    # data the id of the user
+    BOOKMARKS_UPDATED = "bookmarks_updated"
     PLAYLOG_UPDATED = "playlog_updated"
     PROVIDERS_UPDATED = "providers_updated"
     # generic event emitted by a provider instance;
@@ -702,6 +719,12 @@ class ProviderFeature(StrEnum):
     # additional library features
     AUTHOR_AUDIOBOOKS = "author_audiobooks"
     NARRATOR_AUDIOBOOKS = "narrator_audiobooks"
+
+    # bookmarks of the user per mediatype: read, and add/rename/remove
+    AUDIOBOOK_BOOKMARKS = "audiobook_bookmarks"
+    AUDIOBOOK_BOOKMARKS_EDIT = "audiobook_bookmarks_edit"
+    PODCAST_EPISODE_BOOKMARKS = "podcast_episode_bookmarks"
+    PODCAST_EPISODE_BOOKMARKS_EDIT = "podcast_episode_bookmarks_edit"
 
     # if we can grab all albums for an artist from the music provider
     ARTIST_ALBUMS = "artist_albums"
@@ -1018,6 +1041,21 @@ class ProviderStage(StrEnum):
         return cls.STABLE
 
 
+class ProviderTier(StrEnum):
+    """Enum with possible Provider maintainer tiers."""
+
+    # core: built and maintained by the Music Assistant team
+    CORE = "core"
+
+    # community: built and maintained by a community member
+    COMMUNITY = "community"
+
+    @classmethod
+    def _missing_(cls, value: object) -> ProviderTier:  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return cls.COMMUNITY
+
+
 class ProviderIconVariant(StrEnum):
     """Enum of provider icon variants that a provider can supply."""
 
@@ -1081,6 +1119,7 @@ class SortField(StrEnum):
     PROVIDER = "provider"  # the provider the item comes from
     FAVORITE_TIMESTAMP = "favorite_timestamp"  # when the calling user liked the item
     ORIGINAL = "original"  # the order the source lists the items in
+    RELEASE_DATE = "release_date"  # full release date, falling back to the release year
 
 
 class SortDirection(StrEnum):
