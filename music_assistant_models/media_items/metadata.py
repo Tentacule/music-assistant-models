@@ -217,6 +217,8 @@ class MediaItemMetadata(DataClassDictMixin):
     preview: str | None = None
     popularity: int | None = None
     release_date: datetime | None = None
+    # albums: the year of the first release of the album (all editions), when known
+    original_year: int | None = None
     languages: UniqueList[str] | None = None
     # chapters is a list of available chapters, sorted by position
     # most commonly used for audiobooks and podcast episodes
@@ -253,6 +255,10 @@ class MediaItemMetadata(DataClassDictMixin):
             if new_val is None:
                 continue
             cur_val = getattr(self, fld.name)
+            # the first release is the earliest year any source knows
+            if fld.name == "original_year":
+                setattr(self, fld.name, min(cur_val, new_val) if cur_val else new_val)
+                continue
             if isinstance(cur_val, list) and isinstance(new_val, list):
                 new_val = UniqueList(merge_lists(cur_val, new_val))
                 setattr(self, fld.name, new_val)
