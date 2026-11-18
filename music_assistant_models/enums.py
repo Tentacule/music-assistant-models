@@ -187,6 +187,31 @@ class AlbumType(StrEnum):
         return cls.UNKNOWN
 
 
+class AlbumSeriesType(StrEnum):
+    """Enum for the type of an album series."""
+
+    ALBUM_SERIES = "album_series"  # numbered volumes, like a compilation series
+    RANKED_LIST = "ranked_list"  # a list of best albums, like "1001 albums..."
+    PERSONAL = "personal"  # a series of the user's own
+
+    @classmethod
+    def _missing_(cls, value: object) -> AlbumSeriesType:  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return cls.ALBUM_SERIES
+
+
+class AlbumSeriesSource(StrEnum):
+    """Enum for where an album series comes from."""
+
+    MUSICBRAINZ = "musicbrainz"  # MusicBrainz (or file tags), refreshed with the metadata
+    CUSTOM = "custom"  # created by the user
+
+    @classmethod
+    def _missing_(cls, value: object) -> AlbumSeriesSource:  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return cls.MUSICBRAINZ
+
+
 class RecommendationFolderType(StrEnum):
     """Enum for RecommendationFolder type."""
 

@@ -10,7 +10,13 @@ from typing import Any
 
 from mashumaro import DataClassDictMixin
 
-from music_assistant_models.enums import ArtistEntityType, ImageType, LinkType
+from music_assistant_models.enums import (
+    AlbumSeriesSource,
+    AlbumSeriesType,
+    ArtistEntityType,
+    ImageType,
+    LinkType,
+)
 from music_assistant_models.helpers import create_safe_string, create_sort_name, merge_lists
 from music_assistant_models.unique_list import UniqueList
 
@@ -298,3 +304,7 @@ class MediaCollectionMetadata(MediaItemMetadata):
     duration: int | None = None
     fully_played: bool | None = None
     in_progress: bool | None = None
+    # album series only: its type, where it comes from and the albums removed from it
+    series_type: AlbumSeriesType | None = None
+    series_source: AlbumSeriesSource | None = None
+    hidden_item_ids: list[str] | None = None
