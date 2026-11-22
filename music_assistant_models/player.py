@@ -12,6 +12,7 @@ from mashumaro import DataClassDictMixin, field_options
 from .audio_processing import ActiveSourceAudioDetails
 from .constants import EXTRA_ATTRIBUTES_TYPES, PLAYER_CONTROL_NONE
 from .enums import (
+    ChannelLayout,
     IdentifierType,
     MediaType,
     PlaybackState,
@@ -175,6 +176,12 @@ class PlayerSource(DataClassDictMixin):
     name: str
     # passive: this source can not be selected/activated by MA/the user
     passive: bool = False
+    # is_input: an input of a device, such as Line-in, TV or Optical,
+    # not an app, a service or a preset the device can switch to
+    is_input: bool = False
+    # owner_player_id: the player this source belongs to when that is not the player
+    # that lists it, such as the line-in of another speaker of the same system
+    owner_player_id: str | None = None
     # can_play_pause: this source can be paused and resumed
     can_play_pause: bool = False
     # can_seek: this source can be seeked
@@ -510,6 +517,10 @@ class Player(DataClassDictMixin):
 
     # protocols: the protocols this player is made up of, with their role and state
     protocols: list[PlayerProtocolInfo] = field(default_factory=list)
+
+    # channel_layout: how the speakers of a multi-channel player are laid out,
+    # None for a player that is no set of speakers or whose layout is not known
+    channel_layout: ChannelLayout | None = None
 
     #############################################################################
     # helper methods and properties                                             #
